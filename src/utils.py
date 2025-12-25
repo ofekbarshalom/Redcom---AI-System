@@ -33,32 +33,71 @@
 #     return output_df
 
 
+
+
+
+# import pandas as pd
+# import numpy as np
+
+# def preprocess_data(df: pd.DataFrame):
+#     """
+#     Cleans and prepares the 111 traffic features for the model.
+#     Ensures that both training and inference data follow the same logic.
+#     """
+#     df = df.copy()
+    
+#     # 1. Convert IP Addresses to 32-bit integers
+#     for col in ['Source_IP', 'Destination_IP']:
+#         if col in df.columns:
+#             df[col] = df[col].apply(lambda x: sum([int(b) << 8*(3-i) for i, b in enumerate(x.split('.'))]) if isinstance(x, str) else 0)
+    
+#     # 2. Map Protocol strings to numeric values
+#     if 'Protocol' in df.columns:
+#         protocol_map = {'tcp': 6, 'udp': 17}
+#         df['Protocol'] = df['Protocol'].map(protocol_map).fillna(0)
+    
+#     # 3. Drop target labels and non-numeric features like Timestamp
+#     # These should not be used as features for prediction
+#     cols_to_drop = ['label', 'attribution', 'prediction', 'Timestamp']
+#     df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
+    
+#     # 4. Fill missing values (NaN) with 0 to prevent crashes
+#     df = df.fillna(0)
+    
+#     return df
+
+
+
+
+
+
+
 import pandas as pd
 import numpy as np
 
 def preprocess_data(df: pd.DataFrame):
     """
-    Cleans and prepares the 111 traffic features for the model.
-    Ensures that both training and inference data follow the same logic.
+    Cleans the 111 features by removing identity-based columns 
+    and focusing on behavioral/statistical patterns.
     """
     df = df.copy()
     
-    # 1. Convert IP Addresses to 32-bit integers
-    for col in ['Source_IP', 'Destination_IP']:
-        if col in df.columns:
-            df[col] = df[col].apply(lambda x: sum([int(b) << 8*(3-i) for i, b in enumerate(x.split('.'))]) if isinstance(x, str) else 0)
+    # 1. DROP IDENTITY & IRRELEVANT FEATURES
+    # We remove IPs, Ports, and Timestamps to avoid Overfitting.
+    # We also remove labels and predictions if they exist.
+    drop_cols = [
+        'Source_IP', 'Destination_IP', 'Source_port', 'Destination_port', 
+        'Timestamp', 'label', 'attribution', 'prediction'
+    ]
+    df = df.drop(columns=[c for c in drop_cols if c in df.columns])
     
-    # 2. Map Protocol strings to numeric values
+    # 2. ENCODE PROTOCOL
+    # Protocol is important for Attribution (e.g., Video often uses UDP).
     if 'Protocol' in df.columns:
-        protocol_map = {'tcp': 6, 'udp': 17}
-        df['Protocol'] = df['Protocol'].map(protocol_map).fillna(0)
-    
-    # 3. Drop target labels and non-numeric features like Timestamp
-    # These should not be used as features for prediction
-    cols_to_drop = ['label', 'attribution', 'prediction', 'Timestamp']
-    df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
-    
-    # 4. Fill missing values (NaN) with 0 to prevent crashes
+        df['Protocol'] = df['Protocol'].map({'tcp': 6, 'udp': 17}).fillna(0)
+        
+    # 3. FILL MISSING VALUES
+    # Ensure all numerical data is ready for the Random Forest model.
     df = df.fillna(0)
     
     return df
