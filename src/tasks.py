@@ -1,33 +1,3 @@
-# from celery import Celery
-# import pandas as pd
-# import io
-# import os
-
-# # Configure Redis as the broker to manage task loads [cite: 84]
-# celery_app = Celery("tasks", 
-#                     broker="redis://redis:6379/0", 
-#                     backend="redis://redis:6379/1")
-
-# @celery_app.task(bind=True)
-# def run_inference_task(self, csv_content, task_type):
-#     # Load input data into a DataFrame
-#     df = pd.read_csv(io.StringIO(csv_content))
-    
-#     # --- LOGIC NOTE ---
-#     # Since you submit code without models[cite: 8, 22], ensure your 
-#     # loading logic points to a directory that can be mounted as a volume.
-    
-#     # Placeholder for your trained model prediction:
-#     if task_type == 'app':
-#         # Logic for identifying 128 applications [cite: 5]
-#         df['prediction'] = "Predicted_App_Name" 
-#     else:
-#         # Logic for identifying 5 attribution types [cite: 6]
-#         df['prediction'] = "Predicted_Attribution_Type"
-
-#     # MANDATORY: The result MUST have the 'prediction' column [cite: 9, 21]
-#     return df.to_json(orient="split")
-
 from celery import Celery
 import pandas as pd
 import joblib
