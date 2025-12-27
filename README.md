@@ -102,42 +102,38 @@ Once the containers are running:
 ## 📂 Project Structure
 
 ```
-├── Dockerfile.app              # FastAPI inference service container
-├── Dockerfile.worker           # Celery worker container for background ML tasks
-├── README.md                   # Project documentation
-├── docker-compose.yml          # Full stack orchestration (API, Worker, Redis, UI)
-├── requirements.txt            # Python dependencies
+data/
+├── APP-1/
+│   ├── radcom_app_train.csv               # Application training dataset
+│   ├── radcom_app_test.csv                # Application test dataset
+│   └── radcom_app_val_without_labels.csv  # Application validation dataset (no labels)
 │
-├── data                        # Training, testing, and validation datasets
-│   ├── APP-1                   # Application classification datasets
-│   │   ├── radcom_app_train.csv
-│   │   ├── radcom_app_test.csv
-│   │   └── radcom_app_val_without_labels.csv
-│   └── attribution             # Traffic attribution datasets
-│       ├── radcom_att_train.csv
-│       ├── radcom_att_test.csv
-│       └── radcom__att_val_without_labels.csv
-│
-├── models                      # Trained models and feature definitions
-│   ├── model_app.pkl           # Random Forest model for application classification
-│   ├── model_att.pkl           # Random Forest model for attribution classification
-│   ├── app_features.pkl        # Ordered feature list for app inference
-│   └── att_features.pkl        # Ordered feature list for attribution inference
-│
-├── predictions                 # Output prediction results
-│   ├── app_predictions.csv
-│   └── att_predictions.csv
-│
-├── src                         # Core application source code
-│   ├── api.py                  # FastAPI server and REST endpoints
-│   ├── tasks.py                # Celery task definitions for asynchronous inference
-│   ├── worker.py               # Celery worker initialization and model loading
-│   ├── streamlit_app.py        # Streamlit web UI for file upload and result visualization
-│   └── utils.py                # Shared preprocessing and feature-engineering utilities
-│
-├── train                       # Model training scripts
-│   ├── train_app.py            # Application classifier training pipeline
-│   └── train_att.py            # Attribution classifier training pipeline
-│
-└── test_models.py              # Model evaluation and validation reports
+└── attribution/
+    ├── radcom_att_train.csv               # Attribution training dataset
+    ├── radcom_att_test.csv                # Attribution test dataset
+    └── radcom__att_val_without_labels.csv # Attribution validation dataset (no labels)
+
+models/
+
+predictions/
+├── app_predictions.csv  # Application prediction results
+└── att_predictions.csv  # Attribution prediction results
+
+src/
+├── api.py               # FastAPI server logic and endpoints
+├── tasks.py             # Celery background task definitions
+├── worker.py            # Celery worker initialization and model loading
+├── streamlit_app.py     # Streamlit web UI
+└── utils.py             # Data cleaning and preprocessing utilities
+
+train/
+├── train_app.py         # Application model training script
+└── train_att.py         # Attribution model training script
+
+test_models.py           # Model evaluation script
+requirements.txt         # Python dependencies
+
+Dockerfile.app           # API service Dockerfile
+Dockerfile.worker        # Celery worker Dockerfile
+docker-compose.yml       # Full stack orchestration (Redis, API, Worker, UI)
 ```
