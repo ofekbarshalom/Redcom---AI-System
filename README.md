@@ -79,8 +79,8 @@ python3 src/test_models.py
 Ensure your `models/` directory contains the generated `.pkl` files before launching the containers.
 
 ```bash
-# Build and start all services in the background
-sudo docker compose up --build -d
+# Build and start all services
+sudo docker compose up --build
 ```
 
 ---
