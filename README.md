@@ -35,7 +35,7 @@ To ensure the model generalizes across different networks and avoids overfitting
 The project follows a **decoupled microservices architecture** designed to handle high-traffic *hexabyte-scale* workloads through horizontal scaling.
 
 - **FastAPI**  
-  RESTful API gateway serving as the entry point for inference requests using the OpenAPI standard.
+  REST API gateway serving as the entry point for inference requests using the OpenAPI standard.
 
 - **Celery & Redis**  
   Asynchronous task queue that prevents API blocking during heavy ML computations, enabling massive scale.
