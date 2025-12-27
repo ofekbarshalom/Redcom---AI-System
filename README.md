@@ -1,7 +1,6 @@
 # Radcom Traffic Classification System 🚀
 
-This project is a high-performance, scalable machine learning system designed to classify encrypted network traffic. It addresses two main challenges: identifying **128 different application types** and **5 traffic attribution categories** using behavioral and statistical flow features.
-
+This project is a high-performance, scalable machine learning system designed to classify encrypted network traffic.
 ---
 
 ## 🧠 Machine Learning Approach
