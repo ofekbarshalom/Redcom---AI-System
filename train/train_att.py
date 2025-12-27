@@ -8,14 +8,12 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.utils import preprocess_data
 
-def train_att_model(csv_path):
+def train_att_model(csv_path) -> None:
     print(f"Loading Attribution training data from {csv_path}...")
     df = pd.read_csv(csv_path)
     
-    # Separate the target attribution
-    y = df['attribution']
-    # Preprocess features
-    X = preprocess_data(df)
+    y = df['attribution']    # Separate the target attribution
+    X = preprocess_data(df)  # Preprocess features
     
     print(f"Training Attribution Model (Random Forest)... Features: {X.shape[1]}")
     model = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42)

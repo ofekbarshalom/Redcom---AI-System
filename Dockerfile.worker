@@ -1,15 +1,13 @@
-# Use the same base as the app for environment consistency [cite: 109]
 FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install dependencies [cite: 111, 112]
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code [cite: 113]
+# Copy source code
 COPY . .
 
-# Run the Celery worker on startup [cite: 114]
-# -A tasks points to the celery_app defined in tasks.py
+# Run the Celery worker on startup
 CMD ["celery", "-A", "src.tasks.celery_app", "worker", "--loglevel=info"]

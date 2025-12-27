@@ -1,11 +1,10 @@
 services:
-  # The message broker for scaling [cite: 79]
   redis:
     image: "redis/redis-stack-server:latest"
     ports:
       - "6380:6379"
 
-  # The FastAPI Inference Server
+  # FastAPI Inference Server
   inference:
     build:
       context: .
@@ -18,24 +17,22 @@ services:
     depends_on:
       - redis
 
-  # The Background Worker [cite: 90-95]
+  # Background Worker
   worker:
     build:
       context: .
       dockerfile: Dockerfile.worker
-    # Fix: Point to src.tasks
     command: celery -A src.tasks.celery_app worker --loglevel=info
     volumes:
       - .:/app
     depends_on:
       - redis
 
-  # The Streamlit UI [cite: 46-57]
+  # Streamlit
   streamlit:
     build:
       context: .
       dockerfile: Dockerfile.app
-    # Fix: Point to src/streamlit_app.py
     command: streamlit run src/streamlit_app.py --server.port=8501 --server.address=0.0.0.0
     ports:
       - "8501:8501"

@@ -8,14 +8,12 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.utils import preprocess_data
 
-def train_app_model(csv_path):
+def train_app_model(csv_path) -> None:
     print(f"Loading App training data from {csv_path}...")
     df = pd.read_csv(csv_path)
     
-    # Separate the target label
-    y = df['label']
-    # Preprocess features
-    X = preprocess_data(df)
+    y = df['label']         # Separate the target label
+    X = preprocess_data(df) # Preprocess features
     
     print(f"Training App Model (Random Forest)... Features: {X.shape[1]}")
     # n_jobs=-1 uses all available CPU cores for faster training

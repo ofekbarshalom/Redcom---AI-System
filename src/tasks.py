@@ -1,4 +1,5 @@
 from celery import Celery
+from typing import Any
 import pandas as pd
 import joblib
 import io
@@ -11,31 +12,28 @@ celery_app = Celery("tasks",
                     backend="redis://redis:6379/1")
 
 @celery_app.task(bind=True)
-def run_inference_task(self, csv_content, task_type):
-    # 1. Load data from string
+def run_inference_task(self, csv_content: str, task_type: str) -> str | dict[str, str]:
+    # Load data from string
     df = pd.read_csv(io.StringIO(csv_content))
     
-    # 2. Path to models (mounted via volume in docker-compose)
     model_path = f"models/model_{task_type}.pkl"
     feature_path = f"models/{task_type}_features.pkl"
     
     if not os.path.exists(model_path):
         return {"error": "Model file not found. Ensure training is complete."}
 
-    # 3. Load model and feature list
+    # Load model and feature list
     model = joblib.load(model_path)
     required_features = joblib.load(feature_path)
     
-    # 4. Preprocess input data
     X = preprocess_data(df)
     
-    # 5. Ensure feature alignment (same columns in same order as training)
+    # Ensure feature alignment (same columns in same order as training)
     X = X.reindex(columns=required_features, fill_value=0)
     
-    # 6. Perform batch inference
+    # Perform batch inference
     predictions = model.predict(X)
     
-    # 7. Add mandatory 'prediction' column
     df['prediction'] = predictions
     
     # Return result as JSON
