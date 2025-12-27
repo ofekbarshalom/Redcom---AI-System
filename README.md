@@ -91,7 +91,7 @@ Once the containers are running:
 
 - **Streamlit Web UI**  
   http://localhost:8501  
-  Upload your validation CSV and receive results with the mandatory prediction column.
+  Upload your validation CSV and receive results with the prediction column.
 
 - **FastAPI Docs (OpenAPI)**  
   http://localhost:8000/docs  
