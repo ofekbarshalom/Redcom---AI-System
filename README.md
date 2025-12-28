@@ -6,10 +6,10 @@ This project is a high-performance, scalable machine learning system designed to
 ## 🧠 Machine Learning Approach
 
 ### Algorithm
-The system utilizes the **Random Forest Classifier** for both tasks:
 
 - **App Classification**:  
-  Trained with **200 estimators** and a **maximum depth of 25** to handle the high complexity of 128 target classes.
+  Implemented using a combination of **Random Forest**, **Extra Trees**, and **XGBoost** classifiers.  
+  Each model is trained with **300 estimators**, with maximum depths of **25** (Random Forest), **25** (Extra Trees), and **10** (XGBoost), to handle the complexity of **128 target classes**.
 
 - **Attribution Classification**:  
   Trained with **100 estimators**, using all available CPU cores (`n_jobs=-1`) for efficient processing.

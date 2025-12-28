@@ -22,7 +22,6 @@ data/
 models/
 
 # Project temporary files
-temp_uploads/
 *.json
 
 # IDEs

@@ -1,32 +1,43 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, VotingClassifier
+from sklearn.preprocessing import LabelEncoder
+import xgboost as xgb
 import joblib
 import os
 import sys
 
-# Add src directory to path to import utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.utils import preprocess_data
+from src.utils import preprocess_data_app
 
 def train_app_model(csv_path) -> None:
-    print(f"Loading App training data from {csv_path}...")
+    print(f"Loading App training data...")
     df = pd.read_csv(csv_path)
     
-    y = df['label']         # Separate the target label
-    X = preprocess_data(df) # Preprocess features
+    le = LabelEncoder()
+    y = le.fit_transform(df['label'])
+    X = preprocess_data_app(df)
     
-    print(f"Training App Model (Random Forest)... Features: {X.shape[1]}")
-    # n_jobs=-1 uses all available CPU cores for faster training
-    model = RandomForestClassifier(n_estimators=200, max_depth=25, random_state=42)
-    model.fit(X, y)
+    # Defining the three models
+    rf = RandomForestClassifier(n_estimators=300, max_depth=25, random_state=42)
+    et = ExtraTreesClassifier(n_estimators=300, max_depth=25, random_state=42)
+    xgb_model = xgb.XGBClassifier(n_estimators=300, max_depth=10, learning_rate=0.05, 
+                                  random_state=42, eval_metric='mlogloss')
     
-    # Create models directory if it doesn't exist
+    # Creating a combined Ensemble (Voting)
+    ensemble = VotingClassifier(
+        estimators=[('rf', rf), ('et', et), ('xgb', xgb_model)],
+        voting='soft', # Using probabilities for a more accurate decision
+        n_jobs=-1
+    )
+    
+    print(f"Training Triple Ensemble (RF + ET + XGB)... Features: {X.shape[1]}")
+    ensemble.fit(X, y)
+    
     os.makedirs('models', exist_ok=True)
-    
-    # Save the model and the feature list to ensure alignment during inference
-    joblib.dump(model, 'models/model_app.pkl')
+    joblib.dump(ensemble, 'models/model_app.pkl')
+    joblib.dump(le, 'models/le_app.pkl')
     joblib.dump(X.columns.tolist(), 'models/app_features.pkl')
-    print("App Model saved successfully to models/model_app.pkl")
+    print("Triple Ensemble App Model saved successfully.")
 
 if __name__ == "__main__":
     train_app_model('data/APP-1/radcom_app_train.csv')
